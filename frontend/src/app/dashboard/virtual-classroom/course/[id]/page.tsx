@@ -390,6 +390,7 @@ export default function CourseViewer() {
     const { id } = useParams();
     const router = useRouter();
     const queryClient = useQueryClient();
+    const [isClient, setIsClient] = useState(false);
     const [activeLesson, setActiveLesson] = useState<any>(null);
     const [loadingLesson, setLoadingLesson] = useState(false);
     const [quizAnswers, setQuizAnswers] = useState<Record<string, any>>({});
@@ -397,6 +398,10 @@ export default function CourseViewer() {
     const [shuffledData, setShuffledData] = useState<Record<string, any>>({});
     const [observacion, setObservacion] = useState('');
     const [videoCompleted, setVideoCompleted] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     const wordList = useMemo(() => {
         if (activeLesson?.config?.tipo_actividad === 'sopa_letras') {
@@ -662,7 +667,15 @@ export default function CourseViewer() {
         if (completed) setVideoCompleted(true);
     }, [inscripcion?.id, activeLesson?.id]);
 
-    if (loadingCurso || !curso) return <div>Cargando aula...</div>;
+    if (!isClient) {
+        return (
+            <div style={{ textAlign: 'center', padding: '10rem' }}>
+                <div style={{ color: 'var(--secondary)' }}>Cargando aula virtual...</div>
+            </div>
+        );
+    }
+
+    if (loadingCurso || !curso) return <div style={{ textAlign: 'center', padding: '10rem' }}>Cargando datos del curso...</div>;
 
     const handleEnrol = () => enrolMutation.mutate();
 
