@@ -649,10 +649,6 @@ export default function CourseViewer() {
         return !isLessonCompleted(anterior);
     };
 
-    if (loadingCurso || !curso) return <div>Cargando aula...</div>;
-
-    const handleEnrol = () => enrolMutation.mutate();
-
     // ── Save video progress to DB (throttled by InteractiveVideoPlayer) ──
     const handleVideoProgressUpdate = useCallback(async (maxReached: number, completed: boolean) => {
         if (!inscripcion?.id || !activeLesson?.id) return;
@@ -665,6 +661,12 @@ export default function CourseViewer() {
         // If completed, also mark as completed locally so button stays enabled
         if (completed) setVideoCompleted(true);
     }, [inscripcion?.id, activeLesson?.id]);
+
+    if (loadingCurso || !curso) return <div>Cargando aula...</div>;
+
+    const handleEnrol = () => enrolMutation.mutate();
+
+
 
     const handleSubmitQuiz = async () => {
         if (loadingLesson) {
