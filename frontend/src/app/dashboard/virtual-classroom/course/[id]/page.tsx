@@ -28,23 +28,23 @@ import {
     X, CheckCircle2, Play, Pause, RotateCcw, Check, Video,
     Shuffle, Star, Eye
 } from 'lucide-react';
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 
 // Dynamic Shielding: Isolate heavy components and their hooks from the main hydration cycle
-const InteractiveVideoPlayer = dynamic(() => import('@/components/lms/InteractiveVideoPlayer'), {
+const InteractiveVideoPlayer = nextDynamic(() => import('@/components/lms/InteractiveVideoPlayer'), {
     ssr: false,
     loading: () => <div style={{ padding: '2rem', textAlign: 'center' }}>Cargando reproductor de video...</div>
 });
 
-const WordSearch = dynamic(() => import('@/components/lms/WordSearch'), {
+const WordSearch = nextDynamic(() => import('@/components/lms/WordSearch'), {
     ssr: false,
     loading: () => <div style={{ padding: '2rem', textAlign: 'center' }}>Cargando actividad...</div>
 });
 
-const CertificateDownloader = dynamic(() => import('@/components/lms/CertificateDownloader'), {
+const CertificateDownloader = nextDynamic(() => import('@/components/lms/CertificateDownloader'), {
     ssr: false,
     loading: () => <span style={{ fontSize: '0.8rem' }}>Preparando generador...</span>
 });
