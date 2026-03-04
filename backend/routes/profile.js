@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { supabase } = require('../db');
+const { supabaseAdmin } = require('../db');
 
 // GET perfil individual
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
             .from('perfiles')
             .select('*')
             .eq('id', id)
@@ -23,7 +23,7 @@ router.get('/:id', async (req, res) => {
 router.patch('/:id/read-notifications', async (req, res) => {
     try {
         const { id } = req.params;
-        const { error } = await supabase
+        const { error } = await supabaseAdmin
             .from('perfiles')
             .update({ ultimo_visto_notif: new Date().toISOString() })
             .eq('id', id);
