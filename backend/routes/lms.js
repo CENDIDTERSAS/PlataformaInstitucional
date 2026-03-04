@@ -1,14 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs');
 const { supabase, supabaseAdmin, getSupabaseClient } = require('../db');
 
-// Configuración de logs diagnósticos
-const logPath = 'c:/Users/DAZA ROJAS/Downloads/ProyectoWebInstitucional/backend/tmp/lms_debug.log';
-const logDir = 'c:/Users/DAZA ROJAS/Downloads/ProyectoWebInstitucional/backend/tmp';
-if (!fs.existsSync(logDir)) {
-    fs.mkdirSync(logDir, { recursive: true });
-}
 
 // --- CURSOS ---
 
