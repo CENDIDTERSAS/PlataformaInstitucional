@@ -88,6 +88,11 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`🚀 Servidor backend corriendo en http://localhost:${PORT}`);
-});
+// Local dev: listen on port; Vercel: export the app as serverless function
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`🚀 Servidor backend corriendo en http://localhost:${PORT}`);
+    });
+}
+
+module.exports = app;
