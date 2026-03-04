@@ -28,13 +28,26 @@ import {
     X, CheckCircle2, Play, Pause, RotateCcw, Check, Video,
     Shuffle, Star, Eye
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import InteractiveVideoPlayer from '@/components/lms/InteractiveVideoPlayer';
-import WordSearch from '@/components/lms/WordSearch';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import { CertificatePDF } from '@/components/lms/CertificatePDF';
+
+// Dynamic Shielding: Isolate heavy components and their hooks from the main hydration cycle
+const InteractiveVideoPlayer = dynamic(() => import('@/components/lms/InteractiveVideoPlayer'), {
+    ssr: false,
+    loading: () => <div style={{ padding: '2rem', textAlign: 'center' }}>Cargando reproductor de video...</div>
+});
+
+const WordSearch = dynamic(() => import('@/components/lms/WordSearch'), {
+    ssr: false,
+    loading: () => <div style={{ padding: '2rem', textAlign: 'center' }}>Cargando actividad...</div>
+});
+
+const CertificateDownloader = dynamic(() => import('@/components/lms/CertificateDownloader'), {
+    ssr: false,
+    loading: () => <span style={{ fontSize: '0.8rem' }}>Preparando generador...</span>
+});
 
 const Container = styled.div`
   display: flex;
@@ -837,23 +850,12 @@ export default function CourseViewer() {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                             <h1>{activeLesson.titulo}</h1>
                             {inscripcion.estado === 'Finalizado' && (
-                                <PDFDownloadLink
-                                    document={
-                                        <CertificatePDF
-                                            studentName={`${profile?.nombres} ${profile?.apellidos}`}
-                                            courseName={curso.nombre}
-                                            date={new Date(inscripcion.fecha_finalizacion).toLocaleDateString()}
-                                            verificationCode={inscripcion.id.split('-')[0].toUpperCase()}
-                                        />
-                                    }
-                                    fileName={`Certificado-${curso.nombre}.pdf`}
-                                >
-                                    {({ loading }: any) => (
-                                        <ActionButton style={{ background: '#12A152' }} disabled={loading}>
-                                            <Download size={18} /> {loading ? 'Preparando...' : 'Descargar Certificado'}
-                                        </ActionButton>
-                                    )}
-                                </PDFDownloadLink>
+                                <CertificateDownloader
+                                    studentName={`${profile?.nombres} ${profile?.apellidos}`}
+                                    courseName={curso.nombre}
+                                    date={new Date(inscripcion.fecha_finalizacion).toLocaleDateString()}
+                                    verificationCode={inscripcion.id.split('-')[0].toUpperCase()}
+                                />
                             )}
                             {activeLesson.archivo_url && (
                                 <ActionButton as="a" href={activeLesson.archivo_url} target="_blank" style={{ background: '#0288d1' }}>
